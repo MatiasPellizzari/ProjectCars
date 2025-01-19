@@ -1,0 +1,11 @@
+  1	Gerardo Flores	Gerardo Flores	258.18	3.960	Rojo	2	
+  2	Marcos Vignolo	Marcos Vignolo	255.18	3.890	Azul	2	
+  3	Roje Milioto	Roje Milioto	255.17	3.798	Blanco	2	
+  4	Fernando Mugnos		248.11	2.501	Rojo	1	
+  5	Mario Milioto		247.16	3.552	Rojo	1	
+  6	Walter Dilena		236.27	2.827	Amarillo	1	
+  7	Enrico Dilena	Enrico Dilena	232.37	4.146	Negro	1	
+  8	Emilio Boretto	Emilio Boretto	226.27	4.074	Rojo	2	
+  9	Edgardo Lujan	Edgardo Lujan	217.37	4.167	Negro	2	
+ 10	Checo Perez	Checo Perez	215.37	4.255	Rojo	1	
+ 11	Mario Panigatti	Mario Panigatti	 74	4.417	Rojo	2	

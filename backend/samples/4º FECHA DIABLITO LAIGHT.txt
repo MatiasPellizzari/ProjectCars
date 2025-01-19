@@ -1,0 +1,9 @@
+  1	Roje Milioto	Roje Milioto	264.18	3.782	Blanco	2	
+  2	Marcos Vignolo	Marcos Vignolo	254.19	3.978	Azul	2	
+  3	Gerardo Flores	Gerardo Flores	245.05	4.013	Rojo	2	
+  4	Emilio Boretto	Emilio Boretto	240.23	3.975	Blanco	1	
+  5	Mario Panigatti	Mario Panigatti	240.17	4.015	Rojo	2	
+  6	Raul Mafini	Raul Mafini	238.11	3.961	Negro	2	
+  7	Edgardo Lujan	Edgardo Lujan	238.10	4.157	Blanco	1	
+  8	Enrico Dilena	Enrico Dilena	236.18	4.001	Rojo	1	
+  9	Checo Perez	Checo Perez	143.45	4.213	Negro	1	
