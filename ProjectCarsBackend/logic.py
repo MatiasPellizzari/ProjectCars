@@ -1,7 +1,9 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import os
 
 app = Flask(__name__)
+CORS(app)
 
 people_list = []
 championship_list = []
@@ -44,10 +46,18 @@ def load_championship():
 
     return jsonify({"message": "Championship loaded successfully", "championship_list": championship_list})
 
-# Begin a championship
 @app.route('/api/begin_championship', methods=['POST'])
 def begin_championship():
-    file_path = request.json.get('file_path')
+    if 'file' not in request.files:
+        return jsonify({"error": "File not found in request"}), 400
+
+    file = request.files['file']
+
+    # Save the file temporarily
+    file_path = f"./uploads/{file.filename}"
+    file.save(file_path)
+
+    # Your existing logic
     if not os.path.exists(file_path):
         return jsonify({"error": "File not found"}), 404
 
@@ -74,7 +84,6 @@ def begin_championship():
         championship_list.append(person)
 
     return jsonify({"message": "Championship started successfully", "championship_list": championship_list})
-
 # Update a championship
 @app.route('/api/update_championship', methods=['POST'])
 def update_championship():

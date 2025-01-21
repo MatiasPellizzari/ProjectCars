@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 
-function ChampionshipStart() {
+function ChampionshipResume() {
   const [file, setFile] = useState(null); // To store the selected file
   const [error, setError] = useState("");
   const navigate = useNavigate(); // Initialize useNavigate
@@ -23,17 +23,16 @@ function ChampionshipStart() {
 
     try {
       // Make an API call to your backend to start the championship
-      const response = await axios.post("http://localhost:5000/api/begin_championship", formData, {
+      const response = await axios.post("http://localhost:5000/api/update_championship", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
       // Handle success response
-      console.log("Championship started:", response.data);
+      console.log("Championship updated:", response.data);
       setError(""); // Clear any previous errors
 
-      // Redirect to /ChampionshipTool
       navigate("/ChampionshipTool");
     } catch (err) {
       console.error("Failed to start championship:", err);
@@ -43,7 +42,7 @@ function ChampionshipStart() {
 
   return (
     <div>
-      <h1>Start Championship</h1>
+      <h1>Resume Championship</h1>
       <input type="file" onChange={handleFileChange} />
       <button onClick={handleSubmit}>Start</button>
       {error && <p style={{ color: "red" }}>{error}</p>}
@@ -51,4 +50,4 @@ function ChampionshipStart() {
   );
 }
 
-export default ChampionshipStart;
+export default ChampionshipResume

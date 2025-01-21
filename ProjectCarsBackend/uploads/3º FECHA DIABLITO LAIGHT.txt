@@ -1,0 +1,10 @@
+  1	Roje Milioto Negro	264.27	2.553	Rojo	2	
+  2	Marcos Vignolo Azul	248.29	4.021	Blanco	2	
+  3	Mario Milioto	Rojo	248.06	2.866	Negro	2	
+  4	Gerardo Flores	Rojo	247.38	4.084	Rojo	2	
+  5	Mario Panigatti	Negro	245.29	3.020	Negro	1	
+  6	Raul Maffini	Amaril	238.40	4.050	Amarilo	2	
+  7	Checo	verde	233.03	4.274	Rojo	1	
+  8	Teby Blanco	213.37	4.458	Blanco	1	
+  9	Enrico Dilena	Negro	206.12	3.508	Rojo	1	
+ 10	Walter Dilena	Blanco	205.25	4.436	Azul	1	
