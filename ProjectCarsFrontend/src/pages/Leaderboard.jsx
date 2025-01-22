@@ -19,7 +19,7 @@ function Leaderboard() {
         }
 
         fetchData();
-    }, []); // Empty dependency array ensures this runs only once
+    }, []); 
 
     return (
         <div>
@@ -27,12 +27,16 @@ function Leaderboard() {
             {error && <p style={{ color: "red" }}>{error}</p>}
             <ul className="leaderboard">
                 {drivers.map((driver, index) => (
-                    <li key={index} className="leaderboard-item">
-                        <span className="number">{index + 1})</span>
-                        <span className="name">{driver.name}</span>
-                        <span className="city">{driver.city}</span>
-                        <span className="besttime">{driver.best_time.toFixed(2)}</span>
-                    </li>
+                    <ul className="leaderboard">
+                    {drivers.map((driver, index) => (
+                        <li key={index} className="leaderboard-item">
+                            <span className="number">{index + 1})</span>
+                            <span className="name">{driver.Name}</span>
+                            <span className="score">{driver.Score || "N/A"}</span>
+                            <span className="besttime">{driver["Fastest Lap"]?.toFixed(2) || "N/A"}</span>
+                        </li>
+                    ))}
+                </ul>
                 ))}
             </ul>
         </div>

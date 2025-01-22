@@ -119,7 +119,29 @@ def update_championship():
 # Show the current championship list
 @app.route('/api/show_championship', methods=['GET'])
 def show_championship():
+    print(championship_list)  # Debugging: Log the data
     return jsonify({"championship_list": championship_list})
 
+# Download the championship as a .txt file to resume it later
+@app.route('/api/download_file', methods=['POST'])
+def save_championship_to_txt():
+    # Extract the file_name from the JSON body
+    data = request.json
+    file_name = data.get('file_name')  # Get the file_name parameter from the JSON payload
+
+    if not file_name:
+        return jsonify({"error": "File name is required"}), 400
+
+    try:
+        with open(file_name, 'w') as file:
+            file.write('[' + '\n')
+            for person in championship_list:
+                file.write(str(person) + ',' + '\n')
+            file.write(']')
+        
+        return jsonify({"message": f"File '{file_name}' saved successfully."}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+        
 if __name__ == '__main__':
     app.run(debug=True)

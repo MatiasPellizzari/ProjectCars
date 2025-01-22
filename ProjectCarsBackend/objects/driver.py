@@ -1,6 +1,7 @@
 class Driver:
-        def __init__(self,name,city,besttime):
+        def __init__(self,name,score,city,besttime):
             self.name = name
+            self.score = score
             self.city = city
             self.besttime = float(besttime)
 
