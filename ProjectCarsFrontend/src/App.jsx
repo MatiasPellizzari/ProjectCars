@@ -8,6 +8,7 @@ import Leaderboard from './pages/Leaderboard'
 import ChampionshipResume from './pages/ChampionshipResume'
 import DownloadFile from "./pages/Downloadfile"
 import NavBar from "./components/NavBar"
+import ChampionshipUpdate from "./pages/ChampionshipUpdate"
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route path= "/ChampionshipTool" element= {<ChampionshipTool />}></Route>
             <Route path= "/StartChampionship" element={<ChampionshipStart />} />
             <Route path= "/ResumeChampionship" element={<ChampionshipResume />} />
+            <Route path= "/UpdateChampionship" element={<ChampionshipUpdate />} />
             <Route path= "/DownloadFile" element={<DownloadFile />} />
         </Routes>
     </main>

@@ -35,14 +35,14 @@ function ChampionshipResume() {
 
       navigate("/ChampionshipTool");
     } catch (err) {
-      console.error("Failed to start championship:", err);
-      setError("Failed to start championship.");
+      console.error("Failed to update championship:", err);
+      setError("Failed to update championship.");
     }
   };
 
   return (
     <div>
-      <h1>Resume Championship</h1>
+      <h1>Update Championship</h1>
       <input type="file" onChange={handleFileChange} />
       <button onClick={handleSubmit}>Start</button>
       {error && <p style={{ color: "red" }}>{error}</p>}

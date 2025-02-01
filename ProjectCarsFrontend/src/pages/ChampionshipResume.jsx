@@ -23,7 +23,7 @@ function ChampionshipResume() {
 
     try {
       // Make an API call to your backend to start the championship
-      const response = await axios.post("http://localhost:5000/api/resume_championship", formData, {
+      const response = await axios.post("http://localhost:5000/api/load_championship", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

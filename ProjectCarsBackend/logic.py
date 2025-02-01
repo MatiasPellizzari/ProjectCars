@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import json
 import os
 
 app = Flask(__name__)
@@ -26,26 +27,43 @@ def save_championship():
 # Load championship from a .txt file
 @app.route('/api/load_championship', methods=['POST'])
 def load_championship():
-    file_path = request.json.get('file_path')
+    if 'file' not in request.files:
+        return jsonify({"error": "File not found in request"}), 400
+
+    file = request.files['file']
+
+    # Ensure the uploads directory exists
+    if not os.path.exists('./uploads'):
+        os.makedirs('./uploads')
+
+    file_path = f"./uploads/{file.filename}"
+    file.save(file_path)
+
     if not os.path.exists(file_path):
         return jsonify({"error": "File not found"}), 404
 
     global championship_list
-    with open(file_path, 'r') as file:
-        championship_data = eval(file.read())  # Read and evaluate the content as Python code
-
     championship_list = []
-    for data in championship_data:
-        person = {
-            'Position': data['Position'],
-            'Name': data['Name'],
-            'Score': data['Score'],
-            'Fastest Lap': data['Fastest Lap']
-        }
-        championship_list.append(person)
 
-    return jsonify({"message": "Championship loaded successfully", "championship_list": championship_list})
+    try:
+        # Read and parse JSON file
+        with open(file_path, 'r', encoding='utf-8') as file:
+            championship_list = json.load(file)
 
+        # Ensure key consistency
+        for person in championship_list:
+            person["Fastest Lap"] = person.pop("Fastest_Lap", None)  # Rename key if needed
+
+        # Sort by position
+        championship_list.sort(key=lambda x: x['Position'])
+
+        return jsonify({"message": "Championship loaded successfully", "championship_list": championship_list})
+
+    except json.JSONDecodeError:
+        return jsonify({"error": "Invalid JSON format in file"}), 400
+    except Exception as e:
+        return jsonify({"error": f"Error processing file: {str(e)}"}), 500
+    
 @app.route('/api/begin_championship', methods=['POST'])
 def begin_championship():
     if 'file' not in request.files:
@@ -53,11 +71,9 @@ def begin_championship():
 
     file = request.files['file']
 
-    # Save the file temporarily
     file_path = f"./uploads/{file.filename}"
     file.save(file_path)
 
-    # Your existing logic
     if not os.path.exists(file_path):
         return jsonify({"error": "File not found"}), 404
 
@@ -87,12 +103,19 @@ def begin_championship():
 # Update a championship
 @app.route('/api/update_championship', methods=['POST'])
 def update_championship():
-    file_path = request.json.get('file_path')
+    if 'file' not in request.files:
+        return jsonify({"error": "File not found in request"}), 400
+
+    file = request.files['file']
+
+    file_path = f"./uploads/{file.filename}"
+    file.save(file_path)
+
     if not os.path.exists(file_path):
         return jsonify({"error": "File not found"}), 404
 
     global people_list, championship_list
-    people_list = []
+    people_list= []
 
     with open(file_path, 'r') as file:
         for line in file:
@@ -133,13 +156,22 @@ def save_championship_to_txt():
         return jsonify({"error": "File name is required"}), 400
 
     try:
-        with open(file_name, 'w') as file:
-            file.write('[' + '\n')
-            for person in championship_list:
-                file.write(str(person) + ',' + '\n')
-            file.write(']')
+        # Convert data to valid JSON format
+        formatted_championship_list = [
+            {
+                "Position": person["Position"],
+                "Name": person["Name"],
+                "Score": person["Score"],
+                "Fastest_Lap": person["Fastest Lap"]  # Rename key
+            }
+            for person in championship_list
+        ]
+
+        with open(file_name, 'w', encoding='utf-8') as file:
+            json.dump(formatted_championship_list, file, indent=4)  # Write as formatted JSON
         
         return jsonify({"message": f"File '{file_name}' saved successfully."}), 200
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
         
