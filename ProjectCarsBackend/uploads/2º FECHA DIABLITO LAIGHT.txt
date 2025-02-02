@@ -1,0 +1,11 @@
+  1	Roje Milioto	252.10	3.860	Negro	1	
+  2	Mario Milioto	249.14	3.907	Rojo	2	
+  3	Marcos Vignolo	248.45	4.033	Azul	2	
+  4	Gerardo Flores	235.30	2.762	Rojo	2	
+  5	Fernando Mugnos	234.34	3.305	Negro	2	
+  6	Emilio Boretto	232.30	4.012	Rojo	2	
+  7	Edagardo Lujan	225.11	4.156	Blanco	1	
+  8	Raul Maffini	224.35	4.033	Blanco	2	
+  9	Mario Panigatti	121	4.415	Negro	1	
+ 10	Walter Dilena	 99	4.340	Blanco	1	
+ 11	Enrico Dilena	 91	4.282	Negro	1	
