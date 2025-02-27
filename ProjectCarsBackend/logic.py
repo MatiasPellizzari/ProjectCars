@@ -8,10 +8,26 @@ CORS(app)
 
 people_list = []
 championship_list = []
+senior_list = []
 
 # Define the function to calculate scores
 def calculate_score(position):
     return max(0, 6 - 2 * (position - 1))
+
+# Saves the new senior list
+def save_senior_list():
+    with open("senior_list.json", "w") as f:
+        json.dump(senior_list, f)
+
+# Loads the senior list to be shown 
+def load_senior_list():
+    global senior_list
+    try:
+        with open("senior_list.json", "r") as f:
+            senior_list = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+            return jsonify({"error": f"Error loading senior file"}), 500  
+
 
 # Save championship to a .txt file
 @app.route('/api/save_championship', methods=['POST'])
@@ -145,6 +161,12 @@ def show_championship():
     print(championship_list)  # Debugging: Log the data
     return jsonify({"championship_list": championship_list})
 
+# Show the current senior championship list
+@app.route('/api/show_senior_championship', methods=['GET'])
+def show_senior_championship():
+    print(senior_list)  # Debugging: Log the data
+    return jsonify({"senior_list": senior_list})
+
 # Download the championship as a .txt file to resume it later
 @app.route('/api/download_file', methods=['POST'])
 def save_championship_to_txt():
@@ -174,6 +196,27 @@ def save_championship_to_txt():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-        
+
+#Shows the pilots that are in people_list but not in senior_list
+@app.route("/api/available_people", methods=["GET"])
+def get_available_people():
+    available_people = [p for p in people_list if p not in senior_list]
+    return jsonify({"available_people": available_people})
+
+@app.route('/api/move_to_senior', methods=['POST'])
+def move_to_senior():
+    data = request.json
+    name = data.get("name")
+
+    # Find person in championship_list
+    person = next((p for p in championship_list if p["Name"] == name), None)
+    
+    if person:
+        senior_list.append(person)  # Add to senior list
+        save_senior_list()  # Persist changes
+        return jsonify({"message": f"{name} moved to Senior Leaderboard."})
+    
+    return jsonify({"error": "Person not found"}), 404
+
 if __name__ == '__main__':
     app.run(debug=True)

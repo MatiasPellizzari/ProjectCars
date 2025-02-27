@@ -9,6 +9,8 @@ import ChampionshipResume from './pages/ChampionshipResume'
 import DownloadFile from "./pages/Downloadfile"
 import NavBar from "./components/NavBar"
 import ChampionshipUpdate from "./pages/ChampionshipUpdate"
+import SeniorLeaderboard from './pages/SeniorLeaderboard'
+import AddSenior from './pages/AddSenior'
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
             <Route path= "/ResumeChampionship" element={<ChampionshipResume />} />
             <Route path= "/UpdateChampionship" element={<ChampionshipUpdate />} />
             <Route path= "/DownloadFile" element={<DownloadFile />} />
+            <Route path= "/SeniorLeaderboard" element={<SeniorLeaderboard />} />
+            <Route path= "/AddSenior" element={<AddSenior />} />
         </Routes>
     </main>
     </div>

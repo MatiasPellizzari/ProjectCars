@@ -48,7 +48,6 @@ function Leaderboard() {
                             <span className="number">{index + 1})</span>
                             <span className="name">{driver.Name}</span>
                             <span className="score">{driver.Score || "N/A"}</span>
-                            <span className="besttime">{driver["Fastest Lap"]?.toFixed(2) || "N/A"}</span>
                         </li>
                     ))}
                 </ul>

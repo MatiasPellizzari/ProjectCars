@@ -16,6 +16,12 @@ function ChampionshipTool() {
             <button onClick={() => navigate("/Leaderboard")}>
                 Leaderboard
             </button>
+            <button onClick={() => navigate("/SeniorLeaderboard")}>
+                SeniorLeaderboard
+            </button>
+            <button onClick={() => navigate("/AddSenior")}>
+                AddSenior
+            </button>
           </div>
         </div>
       );
