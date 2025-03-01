@@ -9,10 +9,16 @@ CORS(app)
 people_list = []
 championship_list = []
 senior_list = []
+score_list = []
+participation_score = None
 
-# Define the function to calculate scores
 def calculate_score(position):
-    return max(0, 6 - 2 * (position - 1))
+    index = position - 1  # Convert 1-based position to 0-based index
+    if index < 0:
+        return 0  # Safety check, shouldn't happen
+    if index >= len(score_list):
+        return score_list[-1]  # Use last score if position exceeds list
+    return score_list[index]  # Corrected index usage
 
 # Saves the new senior list
 def save_senior_list():
@@ -112,7 +118,7 @@ def begin_championship():
 
     # Update championship_list with scores
     for i, person in enumerate(sorted_people_list):
-        person['Score'] = calculate_score(i + 1)  # i+1 because i is 0-based
+        person['Score'] = calculate_score(i + 1) + participation_score  # i+1 because i is 0-based
         championship_list.append(person)
 
     return jsonify({"message": "Championship started successfully", "championship_list": championship_list})
@@ -217,6 +223,39 @@ def move_to_senior():
         return jsonify({"message": f"{name} moved to Senior Leaderboard."})
     
     return jsonify({"error": "Person not found"}), 404
+
+@app.route('/api/set_score_list', methods=['POST'])
+def set_score_list():
+    global score_list
+    try:
+        data = request.get_json()
+        if "score_list" not in data or not isinstance(data["score_list"], list):
+            return jsonify({"error": "Invalid score list format"}), 400
+        
+        score_list = data["score_list"]
+        print("✅ Score List Updated:", score_list)  # Debugging
+
+        return jsonify({"message": "Score list saved successfully", "score_list": score_list}), 200
+    except Exception as e:
+        print(f"❌ Error: {e}")
+        return jsonify({"error": "Failed to set score list"}), 500
+    
+@app.route('/api/set_participation_score', methods=['POST'])
+def set_participation_score():
+    global participation_score
+    try:
+        data = request.get_json()
+        if "participation_score" not in data or not isinstance(data["participation_score"], int):
+            return jsonify({"error": "Invalid participation score format"}), 400
+        
+        participation_score = data["participation_score"]
+        print("✅ Participation Score Updated:", participation_score)  # Debugging
+
+        return jsonify({"message": "Participation score saved successfully", "participation_score": participation_score}), 200
+    except Exception as e:
+        print(f"❌ Error: {e}")
+        return jsonify({"error": "Failed to set participation score"}), 500   
+
 
 if __name__ == '__main__':
     app.run(debug=True)

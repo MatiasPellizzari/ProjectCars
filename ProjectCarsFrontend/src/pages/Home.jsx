@@ -8,7 +8,7 @@ function Home() {
     <div>
       <h1>Welcome to the Championship Manager</h1>
       <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-        <button onClick={() => navigate("/StartChampionship")}>
+        <button onClick={() => navigate("/SetScores")}>
           Start Championship
         </button>
         <button onClick={() => navigate("/ResumeChampionship")}>
