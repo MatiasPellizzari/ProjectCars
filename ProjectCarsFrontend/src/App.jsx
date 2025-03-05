@@ -1,5 +1,4 @@
 
-import './css/App.css'
 import Home from './pages/Home'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import ChampionshipTool from './pages/ChampionshipTool'

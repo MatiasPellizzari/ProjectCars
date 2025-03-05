@@ -1,0 +1,80 @@
+/* Import a racing-inspired font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Racing+Sans+One&display=swap');
+
+/* Reset default styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Racing Sans One', sans-serif; /* Default font for the page */
+}
+
+.championship-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between; /* Space out the title and buttons */
+  height: 100vh;
+  width: 100vw;
+  color: black;
+  text-align: center;
+  background:url(./img/fondo3.jpg) no-repeat center center;
+  background-size: cover;
+  padding: 40px 0; /* Add padding to avoid content touching the edges */
+}
+
+h1 {
+  font-size: 3.5rem; /* Larger font for emphasis */
+  color: #fff; /* White text for contrast */
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7); /* Stronger shadow for readability */
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black background */
+  padding: 15px 30px;
+  border-radius: 10px;
+  margin-top: 50px; /* Push the title higher up */
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 25px; /* Increased gap between buttons */
+  margin-bottom: 50px; /* Push the buttons lower down */
+}
+
+button {
+  padding: 15px 40px; /* Larger buttons */
+  font-size: 1.5rem;
+  color: #fff; /* White text */
+  background: linear-gradient(45deg, #e74c3c, #c0392b); /* Gradient background for a dynamic look */
+  border: 3px solid #fff; /* White border */
+  border-radius: 5px; /* Slightly rounded edges */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
+  cursor: pointer;
+  transition: 0.3s;
+  text-transform: uppercase; /* Uppercase for a sporty feel */
+  transform: skew(-10deg); /* Slight angle for a racing vibe */
+}
+
+button:hover {
+  background: linear-gradient(45deg, #c0392b, #e74c3c); /* Reverse gradient on hover */
+  transform: skew(-10deg) scale(1.05); /* Scale up slightly on hover */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5); /* Stronger shadow on hover */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2.5rem;
+    padding: 10px 20px;
+    margin-top: 30px;
+  }
+
+  .button-container {
+    gap: 20px;
+    margin-bottom: 50px;
+  }
+
+  button {
+    padding: 12px 30px;
+    font-size: 1.2rem;
+  }
+}

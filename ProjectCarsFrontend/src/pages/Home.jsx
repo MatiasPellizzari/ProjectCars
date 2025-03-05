@@ -1,19 +1,17 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import "../css/Home.css"; 
 
 function Home() {
   const navigate = useNavigate();
 
   return (
-    <div>
-      <h1>Welcome to the Championship Manager</h1>
-      <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-        <button onClick={() => navigate("/SetScores")}>
-          Start Championship
-        </button>
-        <button onClick={() => navigate("/ResumeChampionship")}>
-          Resume Championship
-        </button>
+    <div className="championship-container">
+      <h1>Bienvenidos al Asistente de Campeonatos</h1>
+      <div className="button-container">
+        <button onClick={() => navigate("/SetScores")}>Comenzar Campeonato</button>
+        <button onClick={() => navigate("/ResumeChampionship")}>Reanudar Campeonato</button>
+        <button onClick={() => navigate("/ChampionShipTool")}>Continuar Campeonato Ya Cargado</button>
       </div>
     </div>
   );

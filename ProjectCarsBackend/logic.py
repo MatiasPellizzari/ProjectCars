@@ -12,6 +12,22 @@ senior_list = []
 score_list = []
 participation_score = None
 
+def find_closest_match(name, championship_names):
+    """Finds the closest match for a given name using a simple similarity check."""
+    best_match = None
+    best_score = 0
+
+    for champ_name in championship_names:
+        # Basic similarity: count common words
+        common_words = set(name.split()) & set(champ_name.split())
+        score = len(common_words)  # More common words = better match
+
+        if score > best_score:
+            best_score = score
+            best_match = champ_name
+
+    return best_match if best_score > 0 else "No match found"
+
 def calculate_score(position):
     index = position - 1  # Convert 1-based position to 0-based index
     if index < 0:
@@ -64,28 +80,39 @@ def load_championship():
     if not os.path.exists(file_path):
         return jsonify({"error": "File not found"}), 404
 
-    global championship_list
+    global senior_list, score_list, participation_score, championship_list
     championship_list = []
-
+    
     try:
         # Read and parse JSON file
         with open(file_path, 'r', encoding='utf-8') as file:
-            championship_list = json.load(file)
+            data = json.load(file)  # Load full JSON object
 
-        # Ensure key consistency
+        # Extract values
+        senior_list = data.get("senior_list", [])  
+        score_list = data.get("score_list", [])
+        participation_score = data.get("participation_score", 0)  
+        championship_list = data.get("championship_list", [])
+
+        # Ensure key consistency in championship_list
         for person in championship_list:
-            person["Fastest Lap"] = person.pop("Fastest_Lap", None)  # Rename key if needed
+            person["Fastest Lap"] = person.pop("Fastest_Lap", None)
 
-        # Sort by position
+        # Sort championship_list by position
         championship_list.sort(key=lambda x: x['Position'])
 
-        return jsonify({"message": "Championship loaded successfully", "championship_list": championship_list})
+        return jsonify({
+            "message": "Championship loaded successfully",
+            "senior_list": senior_list,
+            "score_list": score_list,
+            "participation_score": participation_score,
+            "championship_list": championship_list
+        })
 
     except json.JSONDecodeError:
         return jsonify({"error": "Invalid JSON format in file"}), 400
     except Exception as e:
         return jsonify({"error": f"Error processing file: {str(e)}"}), 500
-    
 @app.route('/api/begin_championship', methods=['POST'])
 def begin_championship():
     if 'file' not in request.files:
@@ -122,45 +149,92 @@ def begin_championship():
         championship_list.append(person)
 
     return jsonify({"message": "Championship started successfully", "championship_list": championship_list})
+
 # Update a championship
 @app.route('/api/update_championship', methods=['POST'])
 def update_championship():
     if 'file' not in request.files:
-        return jsonify({"error": "File not found in request"}), 400
+        return jsonify({"status": "error", "error": "File not found in request"}), 400
 
     file = request.files['file']
+
+    # Ensure the uploads directory exists
+    if not os.path.exists('./uploads'):
+        os.makedirs('./uploads')
 
     file_path = f"./uploads/{file.filename}"
     file.save(file_path)
 
-    if not os.path.exists(file_path):
-        return jsonify({"error": "File not found"}), 404
-
     global people_list, championship_list
-    people_list= []
+    people_list = []
+    unrecognized_drivers = []  # 🚨 Track drivers not in championship list
 
-    with open(file_path, 'r') as file:
-        for line in file:
-            parts = line.strip().split('\t')
-            position = int(parts[0])
-            name = parts[1]
-            fastest_lap = float(parts[3])  # Convert to float
+    # Asegurarse de que championship_list tiene datos válidos
+    if not championship_list or not isinstance(championship_list, list):
+        return jsonify({"status": "error", "error": "Championship list is empty or invalid, cannot update"}), 400
 
-            person = {'Position': position, 'Name': name, 'Score': 0, 'Fastest Lap': fastest_lap}
-            people_list.append(person)
+    # Extract names from the leaderboard (asegurar que sea una lista de strings)
+    championship_names = [p['Name'] for p in championship_list if isinstance(p, dict) and 'Name' in p]
 
-    for person in people_list:
-        position = person['Position']
-        score = calculate_score(position)
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            for line in file:
+                parts = line.strip().split('\t')
 
-        # Find the corresponding person in championship_list
-        for champ_person in championship_list:
-            if champ_person['Name'] == person['Name']:
-                # Add the score from the current race to the total score
-                champ_person['Score'] += score
+                if len(parts) < 4:
+                    continue  
 
-    return jsonify({"message": "Championship updated successfully", "championship_list": championship_list})
+                try:
+                    position = int(parts[0])
+                    name = parts[1]
+                    fastest_lap = float(parts[3])  
 
+                    person = {'Position': position, 'Name': name, 'Score': 0, 'Fastest Lap': fastest_lap}
+                    people_list.append(person)
+
+                except ValueError:
+                    continue  
+
+        for person in people_list:
+            position = person['Position']
+            score = calculate_score(position)
+
+            found = False
+            for champ_person in championship_list:
+                if champ_person['Name'] == person['Name']:
+                    champ_person['Score'] += score  
+                    found = True
+                    break  # Stop searching if we found a match
+
+            if not found:
+                closest_match = find_closest_match(person['Name'], championship_names)
+                unrecognized_drivers.append({"name": person['Name'], "closest_match": closest_match})
+
+        # Debugging: Imprimir los datos antes de enviar la respuesta
+        print("Unrecognized Drivers:", unrecognized_drivers)
+        print("Leaderboard Names:", championship_names)
+
+        # Si hay pilotos no reconocidos, enviar una advertencia sin detener el flujo
+        if unrecognized_drivers:
+            return jsonify({
+                "status": "warning",
+                "message": "Some drivers were not found in the leaderboard. The update was not applied.",
+                "unrecognized_drivers": unrecognized_drivers,
+                "leaderboard_names": championship_names  # Asegurar que es una lista de strings
+            }), 200
+
+        # Ordenar por Score si todos los pilotos fueron reconocidos
+        championship_list.sort(key=lambda x: x['Score'], reverse=True)
+
+        return jsonify({
+            "status": "success",
+            "message": "Championship updated successfully",
+            "championship_list": championship_list
+        }), 200
+    except Exception as e:
+        print("Error en update_championship:", str(e))  # Agregar logs para depuración
+        return jsonify({"status": "error", "error": str(e)}), 500
+    
 # Show the current championship list
 @app.route('/api/show_championship', methods=['GET'])
 def show_championship():
@@ -184,20 +258,26 @@ def save_championship_to_txt():
         return jsonify({"error": "File name is required"}), 400
 
     try:
-        # Convert data to valid JSON format
-        formatted_championship_list = [
-            {
-                "Position": person["Position"],
-                "Name": person["Name"],
-                "Score": person["Score"],
-                "Fastest_Lap": person["Fastest Lap"]  # Rename key
-            }
-            for person in championship_list
-        ]
+        # Prepare data in the correct order
+        championship_data = {
+            "senior_list": senior_list,
+            "score_list": score_list,
+            "participation_score": participation_score,
+            "championship_list": [
+                {
+                    "Position": person["Position"],
+                    "Name": person["Name"],
+                    "Score": person["Score"],
+                    "Fastest_Lap": person["Fastest Lap"]  # Rename key
+                }
+                for person in championship_list
+            ]
+        }
 
+        # Save as formatted JSON
         with open(file_name, 'w', encoding='utf-8') as file:
-            json.dump(formatted_championship_list, file, indent=4)  # Write as formatted JSON
-        
+            json.dump(championship_data, file, indent=4)  
+
         return jsonify({"message": f"File '{file_name}' saved successfully."}), 200
 
     except Exception as e:

@@ -1,6 +1,17 @@
 @echo off
 cd /d "%~dp0"
 
+:: Check if Python is installed
+where python >nul 2>nul
+if %errorlevel% neq 0 (
+    echo Python is not installed. Launching installer...
+    start "" "%~dp0python-installer.exe"
+    echo Please complete the installation and restart this script.
+    pause
+    exit /b
+)
+
+
 :: Check and install Backend dependencies
 if not exist "%~dp0ProjectCarsBackend\venv" (
     echo Virtual environment not found, creating one...

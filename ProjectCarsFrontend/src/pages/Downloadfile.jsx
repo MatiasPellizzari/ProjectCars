@@ -1,48 +1,79 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
+import "../css/DownloadFile.css";
 
-function FileParameterTool() {
-  const [fileName, setFileName] = useState(""); // To store the file name input by the user
-  const [message, setMessage] = useState(""); // To show success/error messages
+function DownloadFile() {
+  const [fileName, setFileName] = useState("");
+  const [message, setMessage] = useState("");
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleFileNameChange = (e) => {
-    setFileName(e.target.value); // Update the file name state
+    setFileName(e.target.value);
   };
 
   const handleSendFileName = async () => {
     if (!fileName) {
-      setMessage("Please enter a file name."); // Display error if no file name is entered
+      setMessage("Please enter a file name.");
       return;
     }
 
     try {
-      // Make an API call to the backend with the file name as a parameter
-      const response = await axios.post("http://localhost:5000/api/download_file", { file_name: fileName });
+      const response = await axios.post(
+        "http://localhost:5000/api/download_file",
+        { file_name: fileName },
+        { responseType: "blob" }
+      );
 
-      // Handle success response
-      setMessage(response.data.message || "Operation completed successfully.");
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", fileName || "downloaded_file");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      setMessage("File downloaded successfully.");
     } catch (err) {
-      console.error("Failed to send file name to backend:", err);
-      setMessage("Failed to process the file.");
+      console.error("Failed to download file:", err);
+      setMessage("Failed to download the file.");
     }
   };
 
+  const handleBack = () => {
+    navigate("/ChampionshipTool"); // Navigate back to ChampionshipTool
+  };
+
   return (
-    <div>
-      <h1>File Parameter Tool</h1>
-      {/* Input to type the file name */}
-      <input
-        type="text"
-        placeholder="Enter file name"
-        value={fileName}
-        onChange={handleFileNameChange}
-      />
-      {/* Button to send the file name to the backend */}
-      <button onClick={handleSendFileName}>Use File</button>
-      {/* Display success or error messages */}
-      {message && <p style={{ color: message.includes("Failed") ? "red" : "green" }}>{message}</p>}
+    <div className="file-parameter-container">
+      <h1 className="metal-title">File Parameter Tool</h1>
+      <div className="input-group">
+        <input
+          type="text"
+          placeholder="Enter file name"
+          value={fileName}
+          onChange={handleFileNameChange}
+          className="metal-input"
+        />
+        <button onClick={handleSendFileName} className="metal-button">
+          Use File
+        </button>
+        <button onClick={handleBack} className="metal-button-back">
+          Back
+        </button>
+      </div>
+      {message && (
+        <p
+          className={
+            message.includes("Failed") ? "error-message" : "success-message"
+          }
+        >
+          {message}
+        </p>
+      )}
     </div>
   );
 }
 
-export default FileParameterTool;
+export default DownloadFile;

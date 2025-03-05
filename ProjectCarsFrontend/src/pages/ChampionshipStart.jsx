@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
+import "../css/ChampionshipStart.css"; // Import the new CSS file
 
 function ChampionshipStart() {
-  const [file, setFile] = useState(null); // To store the selected file
+  const [file, setFile] = useState(null);
   const [error, setError] = useState("");
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]); // Update the state with the selected file
+    setFile(e.target.files[0]);
   };
 
   const handleSubmit = async () => {
@@ -17,23 +18,18 @@ function ChampionshipStart() {
       return;
     }
 
-    // Create a FormData object to send the file to the backend
     const formData = new FormData();
     formData.append("file", file);
 
     try {
-      // Make an API call to your backend to start the championship
       const response = await axios.post("http://localhost:5000/api/begin_championship", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
-      // Handle success response
       console.log("Championship started:", response.data);
-      setError(""); // Clear any previous errors
-
-      // Redirect to /ChampionshipTool
+      setError("");
       navigate("/ChampionshipTool");
     } catch (err) {
       console.error("Failed to start championship:", err);
@@ -42,11 +38,23 @@ function ChampionshipStart() {
   };
 
   return (
-    <div>
+    <div className="championship-start-container">
       <h1>Start Championship</h1>
-      <input type="file" onChange={handleFileChange} />
-      <button onClick={handleSubmit}>Start</button>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      <div className="file-input-container">
+        <label htmlFor="file-input" className="file-input-label">
+          {file ? file.name : "Select Archive"}
+        </label>
+        <input
+          type="file"
+          id="file-input"
+          onChange={handleFileChange}
+          className="file-input"
+        />
+      </div>
+      <button onClick={handleSubmit} className="start-button">
+        Start
+      </button>
+      {error && <p className="error-message">{error}</p>}
     </div>
   );
 }
