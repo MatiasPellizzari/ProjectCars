@@ -14,7 +14,7 @@ function DownloadFile() {
 
   const handleSendFileName = async () => {
     if (!fileName) {
-      setMessage("Please enter a file name.");
+      setMessage("Porfavor ingrese un nombre.");
       return;
     }
 
@@ -34,10 +34,10 @@ function DownloadFile() {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
 
-      setMessage("File downloaded successfully.");
+      setMessage("Archivo descargado exitosamente.");
     } catch (err) {
       console.error("Failed to download file:", err);
-      setMessage("Failed to download the file.");
+      setMessage("Error al descargar.");
     }
   };
 
@@ -47,20 +47,20 @@ function DownloadFile() {
 
   return (
     <div className="file-parameter-container">
-      <h1 className="metal-title">File Parameter Tool</h1>
+      <h1 className="metal-title">Descargar archivo</h1>
       <div className="input-group">
         <input
           type="text"
-          placeholder="Enter file name"
+          placeholder="Ingrese nombre"
           value={fileName}
           onChange={handleFileNameChange}
           className="metal-input"
         />
         <button onClick={handleSendFileName} className="metal-button">
-          Use File
+          Descargar
         </button>
         <button onClick={handleBack} className="metal-button-back">
-          Back
+          Volver
         </button>
       </div>
       {message && (

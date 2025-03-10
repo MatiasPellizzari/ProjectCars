@@ -39,10 +39,10 @@ function ChampionshipStart() {
 
   return (
     <div className="championship-start-container">
-      <h1>Start Championship</h1>
+      <h1>Comenzar Campeonato</h1>
       <div className="file-input-container">
         <label htmlFor="file-input" className="file-input-label">
-          {file ? file.name : "Select Archive"}
+          {file ? file.name : "Seleccione archivo"}
         </label>
         <input
           type="file"
@@ -52,7 +52,7 @@ function ChampionshipStart() {
         />
       </div>
       <button onClick={handleSubmit} className="start-button">
-        Start
+        Comenzar
       </button>
       {error && <p className="error-message">{error}</p>}
     </div>

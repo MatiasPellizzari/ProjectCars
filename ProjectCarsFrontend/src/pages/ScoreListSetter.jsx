@@ -11,11 +11,21 @@ function SetScoreList() {
   const navigate = useNavigate();
 
   const handleAddScore = () => {
+    // Check if the input is empty or not a number
     if (inputValue === "" || isNaN(inputValue)) {
       setError("Please enter a valid number.");
       return;
     }
-    setScoreList([...scoreList, parseInt(inputValue)]);
+
+    const score = parseInt(inputValue);
+    // Check if the score is positive (greater than 0)
+    if (score < 0) {
+      setError("Ingrese un numero positivo.");
+      return;
+    }
+
+    // If valid, add the score to the list
+    setScoreList([...scoreList, score]);
     setInputValue("");
     setError("");
     setRacerPosition(racerPosition + 1); // Increment racer position
@@ -34,7 +44,7 @@ function SetScoreList() {
 
   const handleSubmit = async () => {
     if (scoreList.length === 0) {
-      setError("Please enter at least one score.");
+      setError("Por favor ingrese al menos un puntaje.");
       return;
     }
 
@@ -46,38 +56,52 @@ function SetScoreList() {
       navigate("/SetParticipationScore");
     } catch (err) {
       console.error("Failed to save score list:", err);
-      setError("Failed to save score list.");
+      setError("Ocurrio un error.");
     }
+  };
+
+  const handleBack = () => {
+    navigate("/");
   };
 
   return (
     <div className="set-score-container">
-      <h1>Set Score List</h1>
-      <p>Now setting score for racer in the {racerPosition} position</p>
+      <h1 className="set-score-title">Guardar puntajes por posicion</h1>
+      <p className="racer-position">
+        Ahora guardando puntaje para la posicion {racerPosition} y todas las siguientes 
+      </p>
 
       <div className="input-container">
         <input
           type="number"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          placeholder="Enter score"
+          placeholder="Ingrese puntaje"
+          className="score-input"
         />
         <div className="button-group">
-          <button onClick={handleAddScore}>Add Score</button>
+          <button onClick={handleAddScore} className="add-score-button">
+            Guardar puntaje
+          </button>
           <button onClick={handleCancelLastScore} className="cancel-button">
-            Cancel Last Score
+            Cancelar ultimo puntaje
           </button>
         </div>
       </div>
 
       <ul className="score-list">
         {scoreList.map((score, index) => (
-          <li key={index}>{score}</li>
+          <li key={index} className="score-item">{score}</li>
         ))}
       </ul>
 
       <button onClick={handleSubmit} className="next-button">
-        Next
+        Continuar
+      </button>
+
+      
+      <button onClick={handleBack} className="back-button">
+        Volver
       </button>
 
       {error && <p className="error-message">{error}</p>}

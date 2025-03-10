@@ -21,7 +21,7 @@ function ChampionshipUpdate() {
 
   const handleSubmit = async () => {
     if (!file) {
-      setError("Please select a file before starting.");
+      setError("Seleccione un archivo antes de comenzar.");
       return;
     }
 
@@ -45,16 +45,21 @@ function ChampionshipUpdate() {
       navigate("/ChampionshipTool");
     } catch (err) {
       console.error("Failed to update championship:", err);
-      setError("Failed to update championship.");
+      setError("Error al actualizar.");
     }
   };
 
+  const handleBack = () => {
+    navigate("/ChampionshipTool");
+  };
+
+
   return (
     <div className="update-championship-container">
-      <h1>Update Championship</h1>
+      <h1>Actualizar Campeonato</h1>
       <div className="file-input-container">
         <label htmlFor="file-input" className="file-input-label">
-          {file ? file.name : "Select Archive"}
+          {file ? file.name : "Seleccione archivo"}
         </label>
         <input
           type="file"
@@ -64,18 +69,21 @@ function ChampionshipUpdate() {
         />
       </div>
       <button onClick={handleSubmit} className="start-button">
-        Start
+        Comenzar
+      </button>
+      <button onClick={handleBack} className="back-button">
+        Volver
       </button>
       {error && <p className="error-message">{error}</p>}
       {warning && <p className="warning-message">{warning}</p>}
       {unrecognizedDrivers.length > 0 && (
         <div className="unrecognized-drivers-table">
-          <h3>Unrecognized Drivers:</h3>
+          <h3>Corredores no reconocidos:</h3>
           <table>
             <thead>
               <tr>
-                <th>Unrecognized Driver</th>
-                <th>Closest Matches from Leaderboard</th>
+                <th>Corredor no reconocido</th>
+                <th>Nombre mas cercano en tabla</th>
               </tr>
             </thead>
             <tbody>

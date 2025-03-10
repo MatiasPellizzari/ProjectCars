@@ -1,64 +1,101 @@
 import React, { useEffect, useState, useRef } from "react";
-import "../css/Leaderboard.css"; 
+import { useNavigate } from "react-router-dom";
 import html2canvas from "html2canvas";
+import "../css/Leaderboard.css";
 
 function Leaderboard() {
-    const [drivers, setDrivers] = useState([]); // State to hold driver data
-    const [error, setError] = useState(""); // State to hold error messages
-    const leaderboardRef = useRef(null); // Reference for capturing screenshot
+  const [drivers, setDrivers] = useState([]);
+  const [error, setError] = useState("");
+  const leaderboardRef = useRef(null);
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                const response = await fetch("http://localhost:5000/api/show_championship");
-                if (!response.ok) throw new Error("Failed to fetch leaderboard");
-                const data = await response.json();
-                setDrivers(data.championship_list);
-            } catch (err) {
-                console.error(err);
-                setError("Failed to load leaderboard.");
-            }
-        }
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await fetch("http://localhost:5000/api/show_championship");
+        if (!response.ok) throw new Error("Failed to fetch leaderboard");
+        const data = await response.json();
+        setDrivers(data.championship_list);
+      } catch (err) {
+        console.error(err);
+        setError("Failed to load leaderboard.");
+      }
+    }
 
-        fetchData();
-    }, []);
+    fetchData();
+  }, []);
 
-    // Function to capture and download the leaderboard as an image
-    const downloadImage = () => {
-        if (leaderboardRef.current) {
-            html2canvas(leaderboardRef.current).then((canvas) => {
-                const link = document.createElement("a");
-                link.href = canvas.toDataURL("image/png");
-                link.download = "leaderboard.png";
-                link.click();
-            });
-        }
-    };
+  const downloadImage = () => {
+    if (!leaderboardRef.current) {
+      console.error("Ref is not attached to an element.");
+      return;
+    }
+  
+    setTimeout(() => { // Add a slight delay
+      html2canvas(leaderboardRef.current, {
+        scale: 2, 
+        useCORS: true,
+        backgroundColor: null, // Ensure transparent background works
+      })
+        .then((canvas) => {
+          const link = document.createElement("a");
+          link.href = canvas.toDataURL("image/png");
+          link.download = "leaderboard.png";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        })
+        .catch((err) => {
+          console.error("Error generating image:", err);
+          setError("Failed to generate leaderboard image.");
+        });
+    }, 500); // Delay to allow rendering
+  };
 
-    return (
-        <div>
-            <h1>Leaderboard</h1>
-            {error && <p style={{ color: "red" }}>{error}</p>}
-            
-            {/* Leaderboard Section */}
-            <div ref={leaderboardRef} className="leaderboard-container">
-                <ul className="leaderboard">
-                    {drivers.map((driver, index) => (
-                        <li key={index} className="leaderboard-item">
-                            <span className="number">{index + 1})</span>
-                            <span className="name">{driver.Name}</span>
-                            <span className="score">{driver.Score || "N/A"}</span>
-                        </li>
-                    ))}
-                </ul>
-            </div>
+  const handleBack = () => {
+    navigate("/ChampionshipTool");
+  };
 
-            {/* Download Button */}
-            <button onClick={downloadImage} className="download-button">
-                Download Leaderboard
-            </button>
-        </div>
-    );
+  return (
+    <div className="leaderboard-page-container">
+      <h1 className="leaderboard-title">Tabla general</h1>
+      {error && <p className="error-message">{error}</p>}
+
+      {/* Leaderboard Table */}
+      <div className="leaderboard-container" ref={leaderboardRef}>
+        <table className="leaderboard-table">
+          <thead>
+            <tr>
+              <th>POS.</th>
+              <th>PILOTO</th>
+              <th>PTOS.</th>
+            </tr>
+          </thead>
+          <tbody>
+            {drivers.map((driver, index) => (
+              <tr key={index} className="leaderboard-row">
+                <td className="position">{index + 1}</td>
+                <td className="driver">
+                  {typeof driver.Name === "string" ? driver.Name.toUpperCase() : "N/A"}
+                </td>
+                <td className="gap">{driver.Score || "N/A"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Buttons */}
+      <div className="button-group">
+        <button onClick={downloadImage} className="action-button">
+          Descargar imagen de tabla
+        </button>
+        <button onClick={handleBack} className="action-button back-button">
+          Volver
+        </button>
+      </div>
+    </div>
+  );
 }
 
 export default Leaderboard;

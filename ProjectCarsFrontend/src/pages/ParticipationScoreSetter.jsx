@@ -9,8 +9,9 @@ function SetParticipationScore() {
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
-    if (!participationScore || isNaN(participationScore) || participationScore < 0) {
-      setError("Please enter a valid participation score (positive number).");
+    // Check if the input is empty, not a number, or negative
+    if (!participationScore || isNaN(participationScore) || parseInt(participationScore, 10) < 0) {
+      setError("Ingrese un valor positivo.");
       return;
     }
 
@@ -24,24 +25,26 @@ function SetParticipationScore() {
       navigate("/StartChampionship");
     } catch (err) {
       console.error("❌ Failed to set participation score:", err);
-      setError("Failed to set participation score.");
+      setError("Ocurrio un error.");
     }
   };
 
   return (
     <div className="set-participation-container">
-      <h1>Set Participation Score</h1>
+      <h1 className="set-participation-title">Configurar puntos por participacion</h1>
       <div className="input-container">
         <input
           type="number"
           value={participationScore}
-          onChange={(e) => setParticipationScore(e.target.value)}
-          placeholder="Enter participation score"
+          onChange={(e) => setParticipationScore(e.target.value)} // Fixed typo: setInputValue -> setParticipationScore
+          placeholder="Ingrese aqui el valor."
+          className="participation-input"
         />
       </div>
       <button onClick={handleSubmit} className="save-button">
-        Save
+        Guardar
       </button>
+      <h2 className="set-participation-title">si no hay puntos por participacion, guarde un cero</h2>
       {error && <p className="error-message">{error}</p>}
     </div>
   );

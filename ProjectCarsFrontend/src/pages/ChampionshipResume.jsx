@@ -37,12 +37,17 @@ function ChampionshipResume() {
     }
   };
 
+  const handleBack = () => {
+    navigate("/");
+  };
+
+
   return (
     <div className="championship-resume-container">
-      <h1>Resume Championship</h1>
+      <h1>Continuar Campeonato</h1>
       <div className="file-input-container">
         <label htmlFor="file-input" className="file-input-label">
-          {file ? file.name : "Select Archive"}
+          {file ? file.name : "Seleccione Archivo"}
         </label>
         <input
           type="file"
@@ -52,7 +57,10 @@ function ChampionshipResume() {
         />
       </div>
       <button onClick={handleSubmit} className="start-button">
-        Start
+        Continuar
+      </button>
+      <button onClick={handleBack} className="back-button">
+        Volver
       </button>
       {error && <p className="error-message">{error}</p>}
     </div>

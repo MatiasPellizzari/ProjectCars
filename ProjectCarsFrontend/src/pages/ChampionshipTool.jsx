@@ -7,22 +7,22 @@ function ChampionshipTool() {
 
   return (
     <div className="championship-tool-container">
-      <h1 className="neon-title">Select One of the Following:</h1>
+      <h1 className="neon-title">Seleccione uno de los siguientes:</h1>
       <div className="button-grid">
         <button onClick={() => navigate("/UpdateChampionship")} className="neon-button">
-          Update Championship
+          Actualizar campeonato
         </button>
         <button onClick={() => navigate("/DownloadFile")} className="neon-button">
-          Download File
+          Descargar archivo
         </button>
         <button onClick={() => navigate("/Leaderboard")} className="neon-button">
-          Leaderboard
+          Tabla General
         </button>
         <button onClick={() => navigate("/SeniorLeaderboard")} className="neon-button">
-          Senior Leaderboard
+          Tabla senior
         </button>
         <button onClick={() => navigate("/AddSenior")} className="neon-button">
-          Add Senior
+          Agregar Senior
         </button>
         <button onClick={() => navigate("/")} className="neon-button">
           Volver al comienzo

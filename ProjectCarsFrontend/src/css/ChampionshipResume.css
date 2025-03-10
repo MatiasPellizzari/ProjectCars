@@ -18,7 +18,7 @@
   width: 100vw;
   color: black;
   text-align: center;
-  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/img/slot-car-background.jpg') no-repeat center center;
+  background: url(./img/fondo.jpeg);
   background-size: cover;
   padding: 40px 20px;
 }
